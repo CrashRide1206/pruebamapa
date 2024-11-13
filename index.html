@@ -29,7 +29,7 @@
 
     // Cargar el modelo GLB usando GLTFLoader
     const loader = new THREE.GLTFLoader();
-    loader.load('assets/modelo.glb', function(gltf) {
+    loader.load('mapa.glb', function(gltf) {
       scene.add(gltf.scene);
       gltf.scene.position.set(0, 0, 0);
     }, undefined, function(error) {
