@@ -3,50 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visualizar Modelo GLB</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Visualizar archivo STL</title>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; }
+  </style>
 </head>
 <body>
-  <div id="container"></div>
+  <div id="viewer"></div>
 
-  <!-- Three.js CDN -->
+  <!-- Incluir Three.js y STLLoader -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <!-- GLTFLoader para cargar archivos GLB -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js/examples/js/loaders/STLLoader.js"></script>
 
   <script>
-    // Configura la escena, la cámara y el renderizador
+    // Configuración inicial del renderizador
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    document.getElementById("container").appendChild(renderer.domElement);
+    document.body.appendChild(renderer.domElement);
 
-    // Luz para iluminar el modelo
+    // Luz para iluminar el modelo STL
     const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(5, 5, 5).normalize();
+    light.position.set(1, 1, 1).normalize();
     scene.add(light);
 
-    // Cargar el modelo GLB usando GLTFLoader
-    const loader = new THREE.GLTFLoader();
-    loader.load('Mapa.glb', function(gltf) {
-      scene.add(gltf.scene);
-      gltf.scene.position.set(0, 0, 0);
-    }, undefined, function(error) {
-      console.error(error);
+    // Cargar y mostrar el archivo STL
+    const loader = new THREE.STLLoader();
+    loader.load('Mapa1.stl', function (geometry) {
+      const material = new THREE.MeshPhongMaterial({ color: 0x555555 });
+      const mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+
+      // Ajustar la posición de la cámara
+      camera.position.z = 100;
     });
 
-    // Configura la posición de la cámara
-    camera.position.z = 5;
-
-    // Función de animación para renderizar el modelo
+    // Animación para renderizar continuamente
     function animate() {
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
     }
     animate();
 
-    // Ajuste del tamaño del renderizado al redimensionar la ventana
+    // Actualizar el tamaño del renderizador si la ventana cambia
     window.addEventListener('resize', () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
       camera.aspect = window.innerWidth / window.innerHeight;
